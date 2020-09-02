@@ -68,3 +68,9 @@ jobs:
     - name: Deploy SOLAR
       working-directory: steeltoe-sample/src/solar-system-weather
       run: echo 'deploy solar'
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: deployments
+        path: ./zips
