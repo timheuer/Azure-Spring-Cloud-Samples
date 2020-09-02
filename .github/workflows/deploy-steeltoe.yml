@@ -10,12 +10,12 @@ on:
       - '**/*.gitattributes'
 
 env:
-  AZURE_WEBAPP_NAME: aspnet-core-sample-deploy  # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH_PLANET: './published_planet'      # set this to the path to your web app project, defaults to the repository root
-  AZURE_WEBAPP_PACKAGE_PATH_SOLAR: './published_solar'      # set this to the path to your web app project, defaults to the repository root
   NETCORE_VERSION: '3.1.x'                      # set this to the .NET Core version to use
   SERVICE_RESOURCE_GROUP: SteeltoeRG
   SPRING_CLOUD_SERVICE_NAME: steeltoeservice
+  PLANET_SERVICE_ROOT: steeltoe-sample/src/planet-weather-provider
+  SOLAR_SERVICE_ROOT: steeltoe-sample/src/solar-weather-system
+  EXTENSION_SOURCE: https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl
 
 jobs:
   build:
@@ -34,54 +34,62 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Set resource defaults
+      uses: azure/CLI@v1
+      with:
+          inlineScript: |
+            az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+            az configure --defaults group=${{ env.SERVICE_RESOURCE_GROUP }}
+            az configure --defaults spring-cloud=${{ env.SPRING_CLOUD_SERVICE_NAME }}
+
     - name: Restore packages PLANET
-      working-directory: steeltoe-sample/src/planet-weather-provider
+      working-directory: ${{ env.PLANET_SERVICE_ROOT }}
       run: dotnet restore
 
     - name: Build app PLANET
-      working-directory: steeltoe-sample/src/planet-weather-provider
+      working-directory: ${{ env.PLANET_SERVICE_ROOT }}
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish PLANET for deploy
-      working-directory: steeltoe-sample/src/planet-weather-provider
+      working-directory: ${{ env.PLANET_SERVICE_ROOT }}
       run: dotnet publish --configuration Release --no-build 
 
     - name: Deploy PLANET
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
-          az spring-cloud app deploy -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n planet-weather-provider --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.PlanetWeatherProvider.dll --artifact-path steeltoe-sample/src/planet-weather-provider/publish-deploy-planet.zip
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az spring-cloud app deploy -n planet-weather-provider --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.PlanetWeatherProvider.dll --artifact-path ${{ env.PLANET_SERVICE_ROOT }}/publish-deploy-planet.zip
 
     - name: Restore packages SOLAR
-      working-directory: steeltoe-sample/src/solar-system-weather
+      working-directory: ${{ env.SOLAR_SERVICE_ROOT }}
       run: dotnet restore
 
     - name: Build app SOLAR
-      working-directory: steeltoe-sample/src/solar-system-weather
+      working-directory: ${{ env.SOLAR_SERVICE_ROOT }}
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish SOLAR for deploy
-      working-directory: steeltoe-sample/src/solar-system-weather
+      working-directory: ${{ env.SOLAR_SERVICE_ROOT }}
       run: dotnet publish --configuration Release --no-build 
 
     - name: Deploy SOLAR
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
-          az spring-cloud app deploy -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n solar-system-weather --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.dll --artifact-path steeltoe-sample/src/solar-system-weather/publish-deploy-solar.zip
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az spring-cloud app deploy -n solar-system-weather --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.dll --artifact-path ${{env.SOLAR_SERVICE_ROOT}}/publish-deploy-solar.zip
 
     - name: Make public endpoint
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
-          az spring-cloud app update -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n solar-system-weather --is-public true
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az spring-cloud app update -n solar-system-weather --is-public true
 
     - name: Show endpoint
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
-          az spring-cloud app show -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n solar-system-weather -o table
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az spring-cloud app show -n solar-system-weather -o table
