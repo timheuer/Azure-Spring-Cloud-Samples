@@ -14,6 +14,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH_PLANET: './published_planet'      # set this to the path to your web app project, defaults to the repository root
   AZURE_WEBAPP_PACKAGE_PATH_SOLAR: './published_solar'      # set this to the path to your web app project, defaults to the repository root
   NETCORE_VERSION: '3.1.x'                      # set this to the .NET Core version to use
+  SERVICE_RESOURCE_GROUP: SteeltoeRG
+  SPRING_CLOUD_SERVICE_NAME: steeltoeservice
 
 jobs:
   build:
@@ -26,6 +28,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.NETCORE_VERSION }}
+
+    - name: Login to Azure
+      uses: azure/login@v1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
     
     - name: Restore packages PLANET
       working-directory: steeltoe-sample/src/planet-weather-provider
@@ -38,15 +45,12 @@ jobs:
     - name: Publish PLANET for deploy
       working-directory: steeltoe-sample/src/planet-weather-provider
       run: dotnet publish --configuration Release --no-build 
-    
-    # - name: Zip PLANET for deployment
-    #   uses: montudor/action-zip@v0.1.0
-    #   with:
-    #     args: zip -qq -r ./zips/PLANET.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_PLANET }}
 
     - name: Deploy PLANET
-      working-directory: steeltoe-sample/src/planet-weather-provider
-      run: echo 'deploy planet'
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az spring-cloud app deploy -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n planet-weather-provider --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.PlanetWeatherProvider.dll --artifact-path publish-deploy-planet.zip
 
     - name: Restore packages SOLAR
       working-directory: steeltoe-sample/src/solar-system-weather
@@ -60,17 +64,8 @@ jobs:
       working-directory: steeltoe-sample/src/solar-system-weather
       run: dotnet publish --configuration Release --no-build 
 
-    # - name: Zip SOLAR for deployment
-    #   uses: montudor/action-zip@v0.1.0
-    #   with:
-    #     args: zip -qq -r ./zips/SOLAR.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_SOLAR }}
-
     - name: Deploy SOLAR
-      working-directory: steeltoe-sample/src/solar-system-weather
-      run: echo 'deploy solar'
-
-    # - name: Publish Artifacts
-    #   uses: actions/upload-artifact@v1.0.0
-    #   with:
-    #     name: deployments
-    #     path: ./zips
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az spring-cloud app deploy -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n solar-system-weather --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.dll --artifact-path publish-deploy-solar.zip
