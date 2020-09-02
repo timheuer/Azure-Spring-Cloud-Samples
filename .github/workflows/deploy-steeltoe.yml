@@ -15,6 +15,7 @@ env:
   SPRING_CLOUD_SERVICE_NAME: steeltoeservice
   PLANET_SERVICE_ROOT: steeltoe-sample/src/planet-weather-provider
   SOLAR_SERVICE_ROOT: steeltoe-sample/src/solar-system-weather
+  FRONTEND_APP_ROOT: steeltoe-sample/src/frontend
   EXTENSION_SOURCE: https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl
 
 jobs:
@@ -80,16 +81,35 @@ jobs:
           az extension add --source ${{ env. EXTENSION_SOURCE }} -y
           az spring-cloud app deploy -n solar-system-weather --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.dll --artifact-path ${{env.SOLAR_SERVICE_ROOT}}/publish-deploy-solar.zip
 
-    - name: Make public endpoint
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
-          az spring-cloud app update -n solar-system-weather --is-public true
+    - name: Restore packages FRONTEND
+      working-directory: ${{ env.FRONTEND_APP_ROOT }}
+      run: dotnet restore
 
-    - name: Show endpoint
+    - name: Build app FRONTEND
+      working-directory: ${{ env.FRONTEND_APP_ROOT }}
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish FRONTEND for deploy
+      working-directory: ${{ env.FRONTEND_APP_ROOT }}
+      run: dotnet publish --configuration Release --no-build 
+
+    - name: Deploy PLANET
       uses: azure/CLI@v1
       with:
         inlineScript: |
           az extension add --source ${{ env. EXTENSION_SOURCE }} -y
-          az spring-cloud app show -n solar-system-weather -o table
+          az spring-cloud app deploy -n frontend-app --runtime-version NetCore_31 --main-entry frontend.dll --artifact-path ${{ env.FRONTEND_APP_ROOT }}/publish-deploy-frontend.zip
+
+    - name: Make app public endpoint
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az spring-cloud app update -n frontend-app --is-public true
+
+    - name: Show app endpoint
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az spring-cloud app show -n frontend-app -o table
