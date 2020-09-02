@@ -37,12 +37,12 @@ jobs:
 
     - name: Publish PLANET for deploy
       working-directory: steeltoe-sample/src/planet-weather-provider
-      run: dotnet publish --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_PLANET }}
+      run: dotnet publish --configuration Release --no-build 
     
-    - name: Zip PLANET for deployment
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -qq -r ./zips/PLANET.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_PLANET }}
+    # - name: Zip PLANET for deployment
+    #   uses: montudor/action-zip@v0.1.0
+    #   with:
+    #     args: zip -qq -r ./zips/PLANET.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_PLANET }}
 
     - name: Deploy PLANET
       working-directory: steeltoe-sample/src/planet-weather-provider
@@ -58,19 +58,19 @@ jobs:
 
     - name: Publish SOLAR for deploy
       working-directory: steeltoe-sample/src/solar-system-weather
-      run: dotnet publish --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_SOLAR }}
+      run: dotnet publish --configuration Release --no-build 
 
-    - name: Zip SOLAR for deployment
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -qq -r ./zips/SOLAR.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_SOLAR }}
+    # - name: Zip SOLAR for deployment
+    #   uses: montudor/action-zip@v0.1.0
+    #   with:
+    #     args: zip -qq -r ./zips/SOLAR.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_SOLAR }}
 
     - name: Deploy SOLAR
       working-directory: steeltoe-sample/src/solar-system-weather
       run: echo 'deploy solar'
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: deployments
-        path: ./zips
+    # - name: Publish Artifacts
+    #   uses: actions/upload-artifact@v1.0.0
+    #   with:
+    #     name: deployments
+    #     path: ./zips
