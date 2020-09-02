@@ -14,7 +14,7 @@ env:
   SERVICE_RESOURCE_GROUP: SteeltoeRG
   SPRING_CLOUD_SERVICE_NAME: steeltoeservice
   PLANET_SERVICE_ROOT: steeltoe-sample/src/planet-weather-provider
-  SOLAR_SERVICE_ROOT: steeltoe-sample/src/solar-weather-system
+  SOLAR_SERVICE_ROOT: steeltoe-sample/src/solar-system-weather
   EXTENSION_SOURCE: https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl
 
 jobs:
