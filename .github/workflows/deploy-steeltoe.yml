@@ -50,7 +50,7 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --name spring-cloud
+          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
           az spring-cloud app deploy -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n planet-weather-provider --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.PlanetWeatherProvider.dll --artifact-path publish-deploy-planet.zip
 
     - name: Restore packages SOLAR
@@ -69,12 +69,12 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --name spring-cloud
+          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
           az spring-cloud app deploy -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n solar-system-weather --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.dll --artifact-path publish-deploy-solar.zip
 
     - name: Make public endpoint
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az extension add --name spring-cloud
+          az extension add --source https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl -y
           az spring-cloud app update -g ${{ env.SERVICE_RESOURCE_GROUP }} -s ${{ env.SPRING_CLOUD_SERVICE_NAME }} -n solar-system-weather --is-public true
