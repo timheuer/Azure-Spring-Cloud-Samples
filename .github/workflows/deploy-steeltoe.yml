@@ -1,0 +1,70 @@
+name: "Build and Deploy"
+
+on:
+  push:
+    branches:
+      - steeltoe
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.gitignore'
+      - '**/*.gitattributes'
+
+env:
+  AZURE_WEBAPP_NAME: aspnet-core-sample-deploy  # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH_PLANET: './published_planet'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH_SOLAR: './published_solar'      # set this to the path to your web app project, defaults to the repository root
+  NETCORE_VERSION: '3.1.x'                      # set this to the .NET Core version to use
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET Core SDK ${{ env.NETCORE_VERSION }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.NETCORE_VERSION }}
+    
+    - name: Restore packages PLANET
+      working-directory: steeltoe-sample/src/planet-weather-provider
+      run: dotnet restore
+
+    - name: Build app PLANET
+      working-directory: steeltoe-sample/src/planet-weather-provider
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish PLANET for deploy
+      working-directory: steeltoe-sample/src/planet-weather-provider
+      run: dotnet publish --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_PLANET }}
+    
+    - name: Zip PLANET for deployment
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./zips/PLANET.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_PLANET }}
+
+    - name: Deploy PLANET
+      working-directory: steeltoe-sample/src/planet-weather-provider
+      run: echo 'deploy planet'
+
+    - name: Restore packages SOLAR
+      working-directory: steeltoe-sample/src/solar-system-weather
+      run: dotnet restore
+
+    - name: Build app SOLAR
+      working-directory: steeltoe-sample/src/solar-system-weather
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish SOLAR for deploy
+      working-directory: steeltoe-sample/src/solar-system-weather
+      run: dotnet publish --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_SOLAR }}
+
+    - name: Zip SOLAR for deployment
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./zips/SOLAR.zip ${{ env.AZURE_WEBAPP_PACKAGE_PATH_SOLAR }}
+
+    - name: Deploy SOLAR
+      working-directory: steeltoe-sample/src/solar-system-weather
+      run: echo 'deploy solar'
