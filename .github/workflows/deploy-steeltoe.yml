@@ -87,7 +87,7 @@ jobs:
 
     - name: Deploy FRONTEND
       run: |
-          az spring-cloud app deploy -n frontend-app --runtime-version NetCore_31 --main-entry frontend.dll --artifact-path ${{ env.FRONTEND_APP_ROOT }}/publish-deploy-frontend.zip
+          az spring-cloud app deploy -n frontend-app --runtime-version NetCore_31 --main-entry frontend.dll --artifact-path ${{ env.FRONTEND_APP_ROOT }}/publish-deploy-frontend.zip --verbose
 
     - name: Make app public endpoint
       run: |
