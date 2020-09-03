@@ -31,7 +31,7 @@ namespace frontend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDiscoveryClient(Configuration);
-            services.AddDistributedTracing(Configuration);
+            //services.AddDistributedTracing(Configuration);
             services.AddZipkinExporter(Configuration);
 
             services.AddRazorPages();
