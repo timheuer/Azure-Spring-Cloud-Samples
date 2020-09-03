@@ -36,12 +36,10 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Set resource defaults
-      uses: azure/CLI@v1
-      with:
-          inlineScript: |
-            az extension add --source ${{ env. EXTENSION_SOURCE }} -y
-            az configure --defaults group=${{ env.SERVICE_RESOURCE_GROUP }}
-            az configure --defaults spring-cloud=${{ env.SPRING_CLOUD_SERVICE_NAME }}
+      run: |
+          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+          az configure --defaults group=${{ env.SERVICE_RESOURCE_GROUP }}
+          az configure --defaults spring-cloud=${{ env.SPRING_CLOUD_SERVICE_NAME }}
 
     - name: Restore packages PLANET
       working-directory: ${{ env.PLANET_SERVICE_ROOT }}
@@ -56,10 +54,7 @@ jobs:
       run: dotnet publish --configuration Release --no-build 
 
     - name: Deploy PLANET
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+      run: |
           az spring-cloud app deploy -n planet-weather-provider --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.PlanetWeatherProvider.dll --artifact-path ${{ env.PLANET_SERVICE_ROOT }}/publish-deploy-planet.zip
 
     - name: Restore packages SOLAR
@@ -75,10 +70,7 @@ jobs:
       run: dotnet publish --configuration Release --no-build 
 
     - name: Deploy SOLAR
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+      run: |
           az spring-cloud app deploy -n solar-system-weather --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.dll --artifact-path ${{env.SOLAR_SERVICE_ROOT}}/publish-deploy-solar.zip
 
     - name: Restore packages FRONTEND
@@ -93,23 +85,14 @@ jobs:
       working-directory: ${{ env.FRONTEND_APP_ROOT }}
       run: dotnet publish --configuration Release --no-build 
 
-    - name: Deploy PLANET
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+    - name: Deploy FRONTEND
+      run: |
           az spring-cloud app deploy -n frontend-app --runtime-version NetCore_31 --main-entry frontend.dll --artifact-path ${{ env.FRONTEND_APP_ROOT }}/publish-deploy-frontend.zip
 
     - name: Make app public endpoint
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+      run: |
           az spring-cloud app update -n frontend-app --is-public true
 
     - name: Show app endpoint
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az extension add --source ${{ env. EXTENSION_SOURCE }} -y
+      run: |
           az spring-cloud app show -n frontend-app -o table
