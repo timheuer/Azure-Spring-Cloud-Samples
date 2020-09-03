@@ -31,14 +31,12 @@ namespace frontend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDiscoveryClient(Configuration);
-            //services.AddDistributedTracing(Configuration);
-            //services.AddZipkinExporter(Configuration);
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
-            services.AddHttpClient("solar-system-weahter")
+            services.AddHttpClient("solar-system-weather")
                 .AddServiceDiscovery()
                 .AddTypedClient<ISolarSystemService, WeatherForecastService>();
         }
@@ -67,8 +65,6 @@ namespace frontend
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
-            //app.UseTracingExporter();
         }
     }
 }
