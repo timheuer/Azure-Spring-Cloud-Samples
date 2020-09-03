@@ -8,6 +8,9 @@ on:
       - '**/*.md'
       - '**/*.gitignore'
       - '**/*.gitattributes'
+  workflow_dispatch:
+    branches:
+      - steeltoe
 
 env:
   NETCORE_VERSION: '3.1.x'                      # set this to the .NET Core version to use
