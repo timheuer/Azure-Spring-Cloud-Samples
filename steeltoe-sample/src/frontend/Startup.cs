@@ -32,7 +32,7 @@ namespace frontend
         {
             services.AddDiscoveryClient(Configuration);
             //services.AddDistributedTracing(Configuration);
-            services.AddZipkinExporter(Configuration);
+            //services.AddZipkinExporter(Configuration);
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
@@ -68,7 +68,7 @@ namespace frontend
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            app.UseTracingExporter();
+            //app.UseTracingExporter();
         }
     }
 }
