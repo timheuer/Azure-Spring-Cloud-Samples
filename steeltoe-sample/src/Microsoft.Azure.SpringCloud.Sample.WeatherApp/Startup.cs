@@ -6,9 +6,11 @@ using Microsoft.Azure.SpringCloud.Sample.WeatherApp.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Steeltoe.Common.Http.Discovery;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,6 +25,7 @@ namespace Microsoft.Azure.SpringCloud.Sample.WeatherApp
         }
 
         public IConfiguration Configuration { get; }
+        public ILogger _logger { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -36,11 +39,18 @@ namespace Microsoft.Azure.SpringCloud.Sample.WeatherApp
             //services.AddHttpClient("solar-system-weather")
             //    .AddServiceDiscovery()
             //    .AddTypedClient<ISolarSystemService, WeatherForecastService>();
+
+            _logger.LogInformation($"Total Services Registered: {services.Count}");
+            foreach (var service in services)
+            {
+                _logger.LogInformation($"Service: {service.ServiceType.FullName}\n Lifetime: {service.Lifetime}\n Instance: {service.ImplementationType?.FullName}");
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger logger)
         {
+            _logger = logger;
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
