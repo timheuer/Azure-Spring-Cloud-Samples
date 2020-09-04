@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using Microsoft.Azure.SpringCloud.Sample.WeatherApp.Data
-@inject WeatherForecastService ForecastService
+@*@inject WeatherForecastService ForecastService*@
+@inject WeatherModel WeatherModel
 
 <h1>Weather forecast</h1>
 
@@ -20,7 +21,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var forecast in WeatherModel.CurrentWeather)
             {
                 <tr>
                     <td>@forecast.Key</td>
@@ -36,6 +37,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetPlanetWeather();
+        //forecasts = await ForecastService.GetPlanetWeather();
     }
 }
