@@ -31,12 +31,11 @@ namespace Microsoft.Azure.SpringCloud.Sample.WeatherApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             //services.AddSingleton<WeatherForecastService>();
-            
-            services.AddHttpClient("solar-system-weather")
-                .AddServiceDiscovery()
-                .AddTypedClient<ISolarSystemService, WeatherForecastService>();
-
-            services.AddSingleton<WeatherForecastService>();
+            services.AddHttpClient<ISolarSystemService, WeatherForecastService>("solar-system-weather")
+                .AddServiceDiscovery();
+            //services.AddHttpClient("solar-system-weather")
+            //    .AddServiceDiscovery()
+            //    .AddTypedClient<ISolarSystemService, WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
