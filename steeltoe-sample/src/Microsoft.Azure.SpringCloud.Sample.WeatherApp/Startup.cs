@@ -32,7 +32,7 @@ namespace Microsoft.Azure.SpringCloud.Sample.WeatherApp
             services.AddServerSideBlazor();
             //services.AddSingleton<WeatherForecastService>();
             
-            services.AddHttpClient<WeatherForecastService>("solar-system-weather")
+            services.AddHttpClient("solar-system-weather")
                 .AddServiceDiscovery()
                 .AddTypedClient<ISolarSystemService, WeatherForecastService>();
         }
