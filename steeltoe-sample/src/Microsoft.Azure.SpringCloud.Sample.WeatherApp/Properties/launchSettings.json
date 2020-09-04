@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:47224",
-      "sslPort": 44365
+      "applicationUrl": "http://localhost:16946",
+      "sslPort": 44324
     }
   },
   "profiles": {
@@ -15,9 +15,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "frontend": {
+    "Microsoft.Azure.SpringCloud.Sample.WeatherApp": {
       "commandName": "Project",
-      "dotnetRunMessages": "true",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {

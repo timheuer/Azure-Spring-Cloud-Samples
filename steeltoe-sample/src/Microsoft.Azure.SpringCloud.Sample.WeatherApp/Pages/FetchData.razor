@@ -1,6 +1,5 @@
 ﻿@page "/fetchdata"
-
-@using frontend.Data
+@using Microsoft.Azure.SpringCloud.Sample.WeatherApp.Data
 @inject WeatherForecastService ForecastService
 
 <h1>Weather forecast</h1>
@@ -33,7 +32,7 @@ else
 }
 
 @code {
-    private IEnumerable<KeyValuePair<string,string>> forecasts;
+    private IEnumerable<KeyValuePair<string, string>> forecasts;
 
     protected override async Task OnInitializedAsync()
     {

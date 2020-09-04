@@ -18,7 +18,7 @@ env:
   SPRING_CLOUD_SERVICE_NAME: steeltoeservice
   PLANET_SERVICE_ROOT: steeltoe-sample/src/planet-weather-provider
   SOLAR_SERVICE_ROOT: steeltoe-sample/src/solar-system-weather
-  FRONTEND_APP_ROOT: steeltoe-sample/src/frontend
+  FRONTEND_APP_ROOT: steeltoe-sample/src/Microsoft.Azure.SpringCloud.Sample.WeatherApp
   EXTENSION_SOURCE: https://steeltoe.blob.core.windows.net/cli/spring_cloud-0.5.1-py2.py3-none-any.whl
 
 jobs:
@@ -90,7 +90,7 @@ jobs:
 
     - name: Deploy FRONTEND
       run: |
-          az spring-cloud app deploy -n frontend-app --runtime-version NetCore_31 --main-entry frontend.dll --artifact-path ${{ env.FRONTEND_APP_ROOT }}/publish-deploy-frontend.zip --verbose
+          az spring-cloud app deploy -n frontend-app --runtime-version NetCore_31 --main-entry Microsoft.Azure.SpringCloud.Sample.WeatherApp.dll --artifact-path ${{ env.FRONTEND_APP_ROOT }}/publish-deploy-frontend.zip --verbose
 
     - name: Make app public endpoint
       run: |
