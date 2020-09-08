@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.SpringCloud
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather", "src\solar-system-weather\Microsoft.Azure.SpringCloud.Sample.SolarSystemWeather.csproj", "{7E608BB8-CE29-4A26-9346-DC972E7E0EC8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.SpringCloud.Sample.WeatherApp", "src\Microsoft.Azure.SpringCloud.Sample.WeatherApp\Microsoft.Azure.SpringCloud.Sample.WeatherApp.csproj", "{825EF56C-9ABF-4CB1-8C7E-1AE9832E275B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7E608BB8-CE29-4A26-9346-DC972E7E0EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E608BB8-CE29-4A26-9346-DC972E7E0EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E608BB8-CE29-4A26-9346-DC972E7E0EC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{825EF56C-9ABF-4CB1-8C7E-1AE9832E275B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{825EF56C-9ABF-4CB1-8C7E-1AE9832E275B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{825EF56C-9ABF-4CB1-8C7E-1AE9832E275B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{825EF56C-9ABF-4CB1-8C7E-1AE9832E275B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
